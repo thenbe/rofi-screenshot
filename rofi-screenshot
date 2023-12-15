@@ -32,6 +32,12 @@ countdown() {
   sleep 1
 }
 
+check_prerecord() {
+  if pgrep -x picom > /dev/null; then
+    notify-send -u critical --app-name="screenshot" "Screenshot" "Warning: picom is running, this may cause issues with the recording" -t 2000
+  fi
+}
+
 crtc() {
   notify-send --app-name="screenshot" "Screenshot" "Select a region to capture"
   ffcast -q "$(slop -n -f '-g %g ')" png /tmp/screenshot_clip.png
@@ -76,6 +82,7 @@ cstf() {
 }
 
 rgrtf() {
+  check_prerecord
   notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
   dt=$1
   ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec /tmp/screenshot_gif.mp4
@@ -86,6 +93,7 @@ rgrtf() {
 }
 
 rgstf() {
+  check_prerecord
   countdown
   dt=$1
   ffcast -q rec /tmp/screenshot_gif.mp4
@@ -96,6 +104,7 @@ rgstf() {
 }
 
 rvrtf() {
+  check_prerecord
   notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
   dt=$1
   ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec "$screenshot_directory/$dt.mp4"
@@ -103,6 +112,7 @@ rvrtf() {
 }
 
 rvstf() {
+  check_prerecord
   countdown
   dt=$1
   ffcast -q rec "$screenshot_directory/$dt.mp4"
