@@ -107,7 +107,9 @@ rvrtf() {
   check_prerecord
   notify-send --app-name="screenshot" "Screenshot" "Select a region to record"
   dt=$1
-  ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec "$screenshot_directory/$dt.mp4"
+  ffcast -q "$(slop -n -f '-g %g ' && countdown)" rec "$screenshot_directory/$dt-raw.mp4"
+	ffmpeg -i "$screenshot_directory/$dt-raw.mp4" -c:v libx264 -crf 23 -profile:v baseline -level 3.0 -pix_fmt yuv420p -movflags faststart -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" "$screenshot_directory/$dt.mp4"
+	rm "$screenshot_directory/$dt-raw.mp4"
   notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}/$dt.mp4"
 }
 
@@ -115,7 +117,9 @@ rvstf() {
   check_prerecord
   countdown
   dt=$1
-  ffcast -q rec "$screenshot_directory/$dt.mp4"
+  ffcast -q rec "$screenshot_directory/$dt-raw.mp4"
+	ffmpeg -i "$screenshot_directory/$dt-raw.mp4" -c:v libx264 -crf 23 -profile:v baseline -level 3.0 -pix_fmt yuv420p -movflags faststart -vf "pad=ceil(iw/2)*2:ceil(ih/2)*2" "$screenshot_directory/$dt.mp4"
+	rm "$screenshot_directory/$dt-raw.mp4"
   notify-send --app-name="screenshot" "Screenshot" "Saved to ${screenshot_directory//${HOME}/~}/$dt.mp4"
 }
 
